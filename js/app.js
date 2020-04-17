@@ -1,5 +1,6 @@
 'use strict';
-
+let keywords = [];
+let Animals = [];
 $(document).ready(function () {
     function Unicorn(unicorn) {
         this.image_url = unicorn.image_url;
@@ -12,99 +13,80 @@ $(document).ready(function () {
     Unicorn.all = [];
 
 
-    let container = document.getElementById('buttons');
+    // let container = document.getElementById('buttons');
 
-    let btn1 = document.createElement('button');
-    container.appendChild(btn1);
-    btn1.textContent = "Page 1";
-    btn1.setAttribute('id', 'page1');
+    // let btn1 = document.createElement('button');
+    // container.appendChild(btn1);
+    // btn1.textContent = "Page 1";
+    // btn1.setAttribute('id', 'page1');
 
-    let btn2 = document.createElement('button');
-    container.appendChild(btn2);
-    btn2.textContent = "Page 2";
-    btn2.setAttribute('id', 'page2');
+    // let btn2 = document.createElement('button');
+    // container.appendChild(btn2);
+    // btn2.textContent = "Page 2";
+    // btn2.setAttribute('id', 'page2');
 
     Unicorn.prototype.render = function () {
 
-        let container2 = document.getElementById('select');
+        // let container2 = document.getElementById('select');
 
-        let option1 = document.createElement('option');
-        container2.appendChild(option1);
-        option1.textContent = this.keyword;
-        option1.setAttribute('id', "this.keyword");
+        // let option1 = document.createElement('option');
+        // container2.appendChild(option1);
+        // option1.textContent = this.keyword;
+        // option1.setAttribute('id', "this.keyword");
 
-        let $unicornTemplate = $('#unicorn-template').html();
+        let $unicornTemplate = $('#photo-template').html();
         let rendered = Mustache.render($unicornTemplate, this);
         $('main').append(rendered);
         // return rendered;
     }
-    let keywords = [];
-    let renderSelect = function () {
-        // get the select
-        // loop through all the keywords
-        // add it to the select Hint (.append()) TODO search for it
+
+    Unicorn.prototype.filters = function () {
+        console.log(this.keyword);
+        if (!keywords.includes(this.keyword)) {
+            keywords.push(this.keyword);
+            $('select').append($('<option></option>').html(this.keyword).attr('id', this.keyword).attr('class', 'dropDown'));
+        }
     };
-    const jsonFile = () => {
-        $("#page1").one("click", function () {
-            // alert("The paragraph was clicked.");
 
-            $.ajax("data/page-1.json", { method: "GET", dataType: "JSON" }).then(data => {
-                data.forEach(unicornItem => {
-                    let unicorn = new Unicorn(unicornItem);
-                    unicorn.render();
 
-                });
-                renderSelect();
+    const jsonFile = (numPage) => {
+      
+
+        $.ajax(`data/page-${numPage}.json`, { method: "GET", dataType: "JSON" }).then(data => {
+            data.forEach(unicornItem => {
+                let unicorn = new Unicorn(unicornItem);
+                unicorn.render();
+                unicorn.filters();
+                Animals.push(unicorn);
+
+                for (let i = 0; i < Animals.length; i++) {
+                    $(`section:nth-of-type(${i})`).attr('class', Animals[i].keyword).attr('id', Animals[i].title);
+                };
+                
             });
-
-
-        });
-        $("#page2").one("click", function () {
-            // alert("The paragraph was clicked.");
-            // $('#id').removeAttr('src').replaceWith($image.clone());
-
-            $.ajax("data/page-2.json", { method: "GET", dataType: "JSON" }).then(data => {
-                data.forEach(unicornItem => {
-                    let unicorn = new Unicorn(unicornItem);
-                    unicorn.render();
-
-                });
-                renderSelect();
-            });
-
 
         });
 
     };
-    jsonFile();
-    $("select").change(function () {
+            jsonFile(1);
+            $("select").on('change', function () {
+                $('section').hide();
 
-    })
+                let selectedVal = $(this).find(':selected').val();
+                $(`.${selectedVal}`).show();
+            });
+
+            $('button:nth-of-type(1)').on('click', function () {
+
+                $('section').hide();
+                jsonFile(1);
+            });
+
+            $('button:nth-of-type(2)').on('click', function () {
+
+                $('section').hide();
+                jsonFile(2);
+
+            });
+    
 });
-
-
-
-// //0 create array for the keywords  
-// renderSelect = function() {
-//     // get the select
-//     // loop through all the keywords
-//     // add it to the select Hint (.append()) TODO search for it
-//   };
-//   const readJson = () => {
-//     $.ajax("data/page-1.json", { method: "GET", dataType: "JSON" }).then(
-//       data => {
-//         data.forEach(hornItem => {
-//           let horn = new Horns(hornItem);
-//           horn.render();
-//           // if its not in the keyword array
-//           // added it there
-//         });
-//         renderSelect();
-//       }
-//     );
-//   };
-//   readJson();
-//   $("select").change(function() {
-//     // 1 get the value ===> keyword hint $(this)
-//     // 2 hide the elements and only show the ones with id == keyword
-//   });
