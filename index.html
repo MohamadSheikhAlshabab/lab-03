@@ -14,14 +14,19 @@
       <select id="select">
         <option value="default">Filter by Keyword</option>
       </select>
+      <br>
+      <br>
+      <button>Page1</button><br>
+      <br>
+      <button>Page2</button>
     </header>
     <main>
         <section id="buttons"> 
 
         </section>
-        <section id="photo-template">
+        <script id="photo-template" type="x-tmpl-mustache">
+        <section >
 
-            <script id="unicorn-template" type="x-tmpl-mustache">
                 <div>
                     <h2>{{title}}</h2>
                     <img src="{{image_url}}" alt="{{title}}">
@@ -29,8 +34,8 @@
                         <p id="keyword">{{keyword}}</p>
                         <p id="horns">{{horns}}</p>
                     </div>
+                  </section>
                 </script>
-            </section>
                 <!-- <section id="photo-template"> 
                     <h2></h2>
                     <img src="" alt="">
